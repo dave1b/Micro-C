@@ -69,6 +69,23 @@ int main(void) {
     volatile static int i = 0 ;
     /* Enter an infinite loop, just incrementing a counter. */
 
+    struct ledCounter {
+    	unsigned short  shortfrontRightRed;
+		unsigned short  frontRightBlue;
+		unsigned short  frontLeftGreen;
+		unsigned short  frontLeftRed;
+		unsigned short  frontLeftBlue;
+		unsigned short  frontRightGreen;
+		unsigned short  rearRightRed;
+		unsigned short  rearLeftRed;
+    };
+
+    struct ledCounter ledC = {0,0,0,0,0,0,0,0};
+
+    void printLEDcounter() {
+    	printf("%d: %d: %d: %d: %d: %d: %d: %d\n", ledC.shortfrontRightRed, ledC.frontRightBlue, ledC.frontLeftGreen, ledC.frontLeftRed, ledC.frontLeftBlue, ledC.frontRightGreen, ledC.rearRightRed, ledC.rearLeftRed);
+    }
+
     void resetLEDs() {
     	GPIO_PinWrite(GPIOD, 2, 1);  // front right  red
     	GPIO_PinWrite(GPIOD, 3, 1);  // front right  blue
@@ -78,6 +95,7 @@ int main(void) {
         GPIO_PinWrite(GPIOC, 11, 1); // front right  green
 		GPIO_PinWrite(GPIOA, 15, 1); // rare  right  red
 		GPIO_PinWrite(GPIOA, 17, 1); // rare  left   red
+		printLEDcounter();
     }
 
 
@@ -89,6 +107,9 @@ int main(void) {
     			GPIO_PinWrite(GPIOC, 8, 0); // green f l
     			GPIO_PinWrite(GPIOC, 11, 0); // green f r
     			SDK_DelayAtLeastUs(500000, CLOCK_GetCoreSysClkFreq());
+    			ledC.frontLeftGreen = ledC.frontLeftGreen+1;
+    			ledC.frontLeftGreen = ledC.frontRightGreen+1;
+
     			resetLEDs();
     		}
 
@@ -98,6 +119,8 @@ int main(void) {
     			GPIO_PinWrite(GPIOA, 17, 0); // red b l
     			GPIO_PinWrite(GPIOA, 15, 0); // red b r
     			SDK_DelayAtLeastUs(500000, CLOCK_GetCoreSysClkFreq());
+    			ledC.rearLeftRed = ledC.rearLeftRed+1;
+    			ledC.rearRightRed = ledC.rearRightRed+1;
     			resetLEDs();
 
     		}
