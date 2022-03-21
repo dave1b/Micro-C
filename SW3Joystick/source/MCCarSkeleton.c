@@ -74,7 +74,7 @@ int main(void) {
     	GPIO_PinWrite(GPIOD, 3, 1);  // front right  blue
     	GPIO_PinWrite(GPIOC, 8, 1);  // front left   green
     	GPIO_PinWrite(GPIOC, 9, 1);  // front left   red
-		GPIO_PinWrite(GPIOC, 10, 1); // front left   blue
+		GPIO_PinWrite(GPIOC, 10, 1); // front left   blue // GPIO_PinWrite(LED_BLUE_F_L_GPIO LED_BLUE_F_L_PIN,1)
         GPIO_PinWrite(GPIOC, 11, 1); // front right  green
 		GPIO_PinWrite(GPIOA, 15, 1); // rare  right  red
 		GPIO_PinWrite(GPIOA, 17, 1); // rare  left   red
