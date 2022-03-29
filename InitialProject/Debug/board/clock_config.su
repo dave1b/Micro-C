@@ -1,5 +1,5 @@
-C:\Users\Dave\Documents\MCUXpressoIDE_11.5.0_7232\workspace\InitialProject\drivers/fsl_clock.h:842:20:CLOCK_SetSimSafeDivs	4	static
-C:\Users\Dave\Documents\MCUXpressoIDE_11.5.0_7232\workspace\InitialProject\drivers/fsl_clock.h:1184:20:CLOCK_SetXtal0Freq	16	static
+C:\Users\Dave\Documents\MCUXpressoIDE_11.5.0_7232\Micro-C\InitialProject\drivers/fsl_clock.h:842:20:CLOCK_SetSimSafeDivs	4	static
+C:\Users\Dave\Documents\MCUXpressoIDE_11.5.0_7232\Micro-C\InitialProject\drivers/fsl_clock.h:1184:20:CLOCK_SetXtal0Freq	16	static
 ../board/clock_config.c:72:13:CLOCK_CONFIG_SetFllExtRefDiv	16	static
 ../board/clock_config.c:80:6:BOARD_InitBootClocks	8	static
 ../board/clock_config.c:161:6:BOARD_BootClockRUN	8	static
