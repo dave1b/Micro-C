@@ -88,19 +88,20 @@ struct ledCounter {
 struct ledCounter ledC = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
 void printLEDcounter() {
-	printf(
-			"frontRightRed: %d, frontRightGreen: %d,frontRightBlue: %d, frontRightYelow: %d, frontRightPurple: %d,frontLeftRed: "
-					"%d, frontLeftGreen: %d, frontLeftBlue: %d, frontLeftYellow: %d, frontLeftPurple: %d,rearRightRed: %d, rearLeftRed: %d\n",
-			ledC.frontRightRed, ledC.frontRightGreen, ledC.frontRightBlue,
-			ledC.frontRightYellow, ledC.frontRightPurple, ledC.frontLeftRed,
-			ledC.frontLeftGreen, ledC.frontLeftBlue, ledC.frontLeftYellow,
-			ledC.frontLeftPurple, ledC.rearRightRed, ledC.rearLeftRed);
-}
+		printf(
+				"frontRightRed: %d, frontRightGreen: %d,frontRightBlue: %d, frontRightYelow: %d, frontRightPurple: %d,frontLeftRed: "
+						"%d, frontLeftGreen: %d, frontLeftBlue: %d, frontLeftYellow: %d, frontLeftPurple: %d,rearRightRed: %d, rearLeftRed: %d\n",
+				ledC.frontRightRed, ledC.frontRightGreen, ledC.frontRightBlue,
+				ledC.frontRightYellow, ledC.frontRightPurple, ledC.frontLeftRed,
+				ledC.frontLeftGreen, ledC.frontLeftBlue, ledC.frontLeftYellow,
+				ledC.frontLeftPurple, ledC.rearRightRed, ledC.rearLeftRed);
+	}
 
 unsigned short colorCode[] = { 0, 1, 2, 3, 4 }; // red, green, blue, yellow, purple
 unsigned short frontRightLEDColor = 0;
 unsigned short frontLeftLEDColor = 0;
 bool frontLEDon = 0;
+bool backLEDon = 0;
 
 void turnFrontRightLEDon() {
 	switch (frontRightLEDColor) {
@@ -155,35 +156,39 @@ void turnFrontLeftLEDon() {
 	}
 }
 
-void turnFrontLEDsOn() {
-	if(frontLEDon){
-	turnFrontLEDsOff();
-	turnFrontRightLEDon();
-	turnFrontLeftLEDon();
+void turnAllFrontLEDsOn() {
+	if (frontLEDon) {
+		turnFrontLEDsOff();
+		turnFrontRightLEDon();
+		turnFrontLeftLEDon();
 	}
 }
 
 void turnBackLEDsOn() {
 	GPIO_PinWrite(GPIOA, 15, 0); // rear  right  red
 	GPIO_PinWrite(GPIOA, 17, 0); // rear  left   red
+	ledC.rearLeftRed++;
+	ledC.rearRightRed++;
 }
 
-void turnFrontLEDsOff() {
+void turnFrontRightLEDOff() {
 	GPIO_PinWrite(GPIOD, 2, 1);  // front right  red
-	GPIO_PinWrite(GPIOC, 8, 1);  // front left   green
 	GPIO_PinWrite(GPIOD, 3, 1);  // front right  blue
+	GPIO_PinWrite(GPIOC, 11, 1); // front right  green
+}
+void turnFrontLeftLEDOff() {
+	GPIO_PinWrite(GPIOC, 8, 1);  // front left   green
 	GPIO_PinWrite(GPIOC, 9, 1);  // front left   red
 	GPIO_PinWrite(GPIOC, 10, 1); // front left   blue // GPIO_PinWrite(LED_BLUE_F_L_GPIO LED_BLUE_F_L_PIN,1)
-	GPIO_PinWrite(GPIOC, 11, 1); // front right  green
+}
+
+void turnFrontLEDsOff(){
+	turnFrontRightLEDOff();
+	turnFrontLeftLEDOff();
 }
 
 void turnAllLEDsOff() {
-	GPIO_PinWrite(GPIOD, 2, 1);  // front right  red
-	GPIO_PinWrite(GPIOC, 8, 1);  // front left   green
-	GPIO_PinWrite(GPIOD, 3, 1);  // front right  blue
-	GPIO_PinWrite(GPIOC, 9, 1);  // front left   red
-	GPIO_PinWrite(GPIOC, 10, 1); // front left   blue // GPIO_PinWrite(LED_BLUE_F_L_GPIO LED_BLUE_F_L_PIN,1)
-	GPIO_PinWrite(GPIOC, 11, 1); // front right  green
+	turnFrontLEDsOff();
 	GPIO_PinWrite(GPIOA, 15, 1); // rare  right  red
 	GPIO_PinWrite(GPIOA, 17, 1); // rare  left   red
 }
@@ -200,23 +205,35 @@ void PORTB_IRQHandler(void) {
 	//printf("IRQ Detected at pin: %d \n", pin);
 	switch (pin) {
 	case 1:
+		if(frontLEDon){
 		frontRightLEDColor = (frontRightLEDColor + 1) % 5;
-		turnFrontLEDsOn();
+		turnFrontRightLEDOff();
+		turnFrontRightLEDon();
+		}
 		break;
 	case 512:
+		if(frontLEDon){
 		frontLeftLEDColor = (frontLeftLEDColor + 1) % 5;
-		turnFrontLEDsOn();
+		turnFrontLeftLEDOff();
+		turnFrontLeftLEDon();
+		}
 		break;
 	case 8:
 		frontLEDon = 0;
+		backLEDon = 0;
 		turnAllLEDsOff();
 		break;
 	case 4:
+		if(!frontLEDon){
 		frontLEDon = 1;
-		turnFrontLEDsOn();
+		turnAllFrontLEDsOn();
+		}
 		break;
 	case 2:
+		if(!backLEDon){
+			backLEDon = 1;
 		turnBackLEDsOn();
+		}
 		break;
 	}
 	PORT_ClearPinsInterruptFlags(PORTB, (1 << 3));
